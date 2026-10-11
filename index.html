@@ -1,0 +1,1072 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>BrightLeaf Acquisition Mock Case</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: one reading column (max 820px) under a sticky step rail. Every step runs the same loop:
+   interviewer prompt -> your move -> reveal a strong answer. Exhibits sit inside the column like workpapers. */
+:root{
+  --bg:#f2f5f6; --surface:#ffffff; --surface-2:#e8eef0; --fg:#13202a; --fg-2:#44525d; --muted:#6c7a84; --line:#d4dce0;
+  --accent:#0d6b61; --accent-ink:#0a5a51; --accent-soft:#dbeeea; --on-accent:#ffffff;
+  --s1:#2a78d6; --s2:#eb6834; --grid:#e2e8ea; --axis:#b6c1c7;
+  --good:#0ca30c; --good-ink:#006300; --crit:#d03b3b; --crit-ink:#ad2828;
+  --h1:#e6f0fc; --h2:#b7d3f6; --h3:#6da7ec; --h4:#2a78d6; --h5:#104281;
+  --dot:#eb6834; --dot-ink:#111111; --tip-bg:#13202a; --tip-fg:#ffffff;
+  --display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d1215; --surface:#151c20; --surface-2:#1b252a; --fg:#e5ecef; --fg-2:#a8b4bb; --muted:#7c8992; --line:#29343a;
+    --accent:#4cc2b1; --accent-ink:#72d4c6; --accent-soft:#11302c; --on-accent:#06201c;
+    --s1:#3987e5; --s2:#d95926; --grid:#222c32; --axis:#3a464d;
+    --good:#0ca30c; --good-ink:#3dc43d; --crit:#d03b3b; --crit-ink:#ff8484;
+    --h1:#1a2531; --h2:#1c3c63; --h3:#22599b; --h4:#3987e5; --h5:#86b6ef;
+    --dot:#f07a45; --dot-ink:#111111; --tip-bg:#e5ecef; --tip-fg:#0d1215;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0d1215; --surface:#151c20; --surface-2:#1b252a; --fg:#e5ecef; --fg-2:#a8b4bb; --muted:#7c8992; --line:#29343a;
+  --accent:#4cc2b1; --accent-ink:#72d4c6; --accent-soft:#11302c; --on-accent:#06201c;
+  --s1:#3987e5; --s2:#d95926; --grid:#222c32; --axis:#3a464d;
+  --good:#0ca30c; --good-ink:#3dc43d; --crit:#d03b3b; --crit-ink:#ff8484;
+  --h1:#1a2531; --h2:#1c3c63; --h3:#22599b; --h4:#3987e5; --h5:#86b6ef;
+  --dot:#f07a45; --dot-ink:#111111; --tip-bg:#e5ecef; --tip-fg:#0d1215;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:17px/1.6 var(--body);-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding-inline:20px}
+h1,h2,h3{font-family:var(--display);font-stretch:86%;text-wrap:balance;margin:0;letter-spacing:-.01em}
+p{margin:0 0 .8em}
+a{color:var(--accent-ink)}
+b,strong{font-weight:700}
+.eyebrow,.lbl,.who{font:500 11px/1.4 var(--mono);letter-spacing:.09em;text-transform:uppercase}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* rail */
+.rail{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+.rail-in{max-width:820px;margin:0 auto;padding:8px 20px;display:flex;gap:10px;align-items:center}
+.chips{display:flex;gap:4px;overflow-x:auto;flex:1;min-width:0;scrollbar-width:none;padding-block:2px}
+.chips::-webkit-scrollbar{display:none}
+.chips a{font:500 12px var(--mono);padding:5px 9px;border-radius:999px;color:var(--fg-2);white-space:nowrap;text-decoration:none}
+.chips a:hover{background:var(--surface-2)}
+.chips a.on{background:var(--fg);color:var(--bg)}
+.speed{display:flex;align-items:center;gap:6px;font:500 11px var(--mono);color:var(--muted);flex:none}
+.speed select{font:500 12px var(--mono);background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:3px 4px}
+
+/* hero */
+.hero{padding-block:56px 40px}
+.hero .eyebrow{color:var(--accent-ink);margin-bottom:14px}
+.hero h1{font-size:clamp(40px,8vw,64px);line-height:1;font-weight:800;font-stretch:80%}
+.lede{font-size:21px;line-height:1.5;color:var(--fg-2);max-width:36em;margin-top:18px}
+.how{list-style:none;padding:0;margin:26px 0 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.how li{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;font-size:15px;line-height:1.4;counter-increment:how}
+.how li::before{content:counter(how);display:block;font:600 12px var(--mono);color:var(--accent-ink);margin-bottom:4px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+
+/* steps */
+.step{padding-block:52px;border-top:1px solid var(--line);scroll-margin-top:56px}
+.sh{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.idx{font:600 13px var(--mono);color:var(--accent-ink)}
+.sh h2{font-size:clamp(26px,4.4vw,32px);line-height:1.15;font-weight:750}
+.sh .listen{margin-left:auto}
+.sub{color:var(--fg-2);margin-top:8px;max-width:40em}
+
+.btn{font:600 14px/1.2 var(--body);border-radius:8px;padding:9px 14px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.small{font-size:13px;padding:6px 10px}
+.btn[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.btn svg{width:14px;height:14px;fill:currentColor;flex:none}
+
+.iv{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;margin-top:22px}
+.who{color:var(--muted);margin-bottom:8px}
+.iv p{font-size:19px;line-height:1.55}
+.iv p:last-child{margin-bottom:0}
+
+.move{display:flex;gap:12px 16px;align-items:center;flex-wrap:wrap;margin-top:18px;padding-block:14px;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line)}
+.move .lbl{color:var(--accent-ink);flex:none}
+.move p{margin:0;flex:1 1 260px;min-width:0;font-weight:600}
+.move .acts{display:flex;gap:8px;flex-wrap:wrap}
+
+.ans{background:var(--accent-soft);border-radius:var(--r);padding:20px 22px;margin-top:14px}
+.ans .who{color:var(--accent-ink)}
+.ans h3{font-size:19px;margin:18px 0 8px;font-weight:700}
+.ans h3:first-of-type{margin-top:4px}
+.ans ul{margin:0 0 .6em;padding-left:1.2em}
+.ans li{margin-bottom:.35em}
+.script{font-size:18px;line-height:1.6}
+.script p{margin-bottom:.7em}
+.note{font-size:15px;color:var(--fg-2)}
+
+/* facts strip */
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:16px}
+.facts div{background:var(--surface);padding:12px 14px;min-width:0}
+.facts .k{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.facts .v{font:700 22px/1.2 var(--display);font-stretch:86%;margin-top:4px}
+.facts .d{font-size:13px;color:var(--fg-2);line-height:1.35;margin-top:2px}
+
+/* primer */
+.def{font:600 clamp(21px,3.4vw,26px)/1.35 var(--display);font-stretch:92%;margin-top:22px;max-width:30em}
+.split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:22px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;min-width:0}
+.panel h3{font-size:19px;font-weight:700}
+.panel .tag{font:500 11px var(--mono);color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin:2px 0 8px}
+.panel ul{margin:0;padding-left:1.1em;font-size:16px}
+.panel li{margin-bottom:.3em}
+.cycle{list-style:none;padding:0;margin:14px 0 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+.cycle li{position:relative;background:var(--surface-2);border-radius:8px;padding:12px 12px 10px;min-width:0}
+.cycle li b{display:block;font:700 17px var(--display);font-stretch:88%}
+.cycle li span{font-size:14px;color:var(--fg-2);line-height:1.35;display:block;margin-top:2px}
+.cycle li:not(:last-child)::after{content:"";position:absolute;right:-17px;top:50%;width:12px;height:12px;border-top:2px solid var(--muted);border-right:2px solid var(--muted);transform:translateY(-50%) rotate(45deg)}
+.cycle-note{font:500 12px var(--mono);color:var(--muted);margin-top:10px}
+.vocab{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
+.term{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;min-width:0}
+.term b{display:block;font:700 16px var(--display);font-stretch:90%;margin-bottom:3px}
+.term p{margin:0;font-size:15px;line-height:1.45;color:var(--fg-2)}
+.h-sec{font:500 11px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-top:30px}
+
+/* qa list */
+.qa{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.qa li{background:var(--surface);border-radius:8px;padding:12px 14px}
+.qa .q{font-weight:700}
+.qa .a{color:var(--fg-2);margin-top:2px}
+.qa .a::before{content:"Interviewer: ";font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+
+/* framework tree */
+.tree{margin-top:6px}
+.root{background:var(--fg);color:var(--bg);border-radius:8px;padding:12px 16px;font:700 18px/1.3 var(--display);font-stretch:90%;text-align:center;position:relative}
+.root::after{content:"";position:absolute;left:50%;bottom:-16px;width:2px;height:16px;background:var(--muted)}
+.branches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:16px;padding-top:14px;border-top:2px solid var(--muted)}
+.branch{background:var(--surface);border-radius:8px;padding:12px 13px;min-width:0}
+.branch .n{font:600 12px var(--mono);color:var(--accent-ink)}
+.branch b{display:block;font:700 16px/1.25 var(--display);font-stretch:90%;margin:2px 0 6px}
+.branch ul{margin:0;padding-left:1.05em;font-size:14.5px;line-height:1.4}
+.branch li{margin-bottom:.3em}
+
+/* exhibits */
+.ex{margin:22px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 18px 14px}
+.ex-h{display:flex;justify-content:space-between;align-items:baseline;gap:6px 12px;flex-wrap:wrap}
+.ex-t{font:700 18px var(--display);font-stretch:88%}
+.ex-ref{font:500 12px var(--mono);color:var(--muted)}
+.ex-s{font-size:14px;color:var(--fg-2);margin-top:2px}
+.ex figcaption,.src{font:400 12px/1.45 var(--mono);color:var(--muted);margin-top:12px}
+.multiples{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
+.mini{border:1px solid var(--grid);border-radius:8px;padding:10px 10px 4px;min-width:0}
+.mini .nm{font-weight:700;font-size:14.5px;line-height:1.25;min-height:2.5em}
+.mini .ch{font:500 12px var(--mono);color:var(--fg-2)}
+.mini svg{display:block;width:100%;height:auto;margin-top:4px}
+.tblwrap{overflow-x:auto;margin-top:12px}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--grid);white-space:nowrap}
+th{font:500 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+
+.hbar{margin-top:16px}
+.hrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:4px 14px;align-items:center;padding-block:9px;border-bottom:1px solid var(--grid)}
+.hrow:last-of-type{border-bottom:0}
+.hlab b{display:block;font-size:15px;line-height:1.3}
+.hlab span{font-size:13px;color:var(--fg-2);line-height:1.3;display:block}
+.track{position:relative;height:26px}
+.bar{position:absolute;left:0;top:5px;height:16px;border-radius:0 4px 4px 0;background:var(--s1);min-width:2px}
+.bar.b2{background:var(--s2)}
+.bval{position:absolute;top:2px;font:600 13px var(--mono);color:var(--fg);white-space:nowrap;padding-left:6px}
+.tol{position:absolute;top:-4px;bottom:-4px;width:0;border-left:1.5px solid var(--fg-2)}
+.axis{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:14px}
+.ticks{position:relative;height:18px;font:500 11px var(--mono);color:var(--muted);border-top:1px solid var(--axis)}
+.ticks span{position:absolute;top:3px;transform:translateX(-50%)}
+.ticks span:first-child{transform:none}
+.ticks span:last-child{transform:translateX(-100%)}
+.status{font:600 12px var(--mono);display:inline-flex;gap:5px;align-items:center;margin-top:3px}
+.status.bad{color:var(--crit-ink)} .status.ok{color:var(--good-ink)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--fg-2);margin-top:10px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.tolnote{font:500 12px var(--mono);color:var(--fg-2);margin-top:8px}
+
+/* given table + calc steps */
+.given{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:16px}
+.given div{background:var(--surface);padding:11px 13px;min-width:0}
+.given .k{font-size:13px;color:var(--fg-2);line-height:1.3}
+.given .v{font:700 20px/1.2 var(--display);font-stretch:88%;margin-top:3px}
+.calc{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.calc li{background:var(--surface);border-radius:8px;padding:12px 14px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 14px;align-items:center}
+.calc .t{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);grid-column:1/-1}
+.calc .f{font-size:16px;min-width:0}
+.calc .r{font:700 20px var(--display);font-stretch:88%;text-align:right;white-space:nowrap}
+.stepper .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.chipset{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.chipset span{font:500 12px var(--mono);background:var(--surface);border-radius:6px;padding:4px 8px;color:var(--fg-2)}
+.chipset b{color:var(--fg)}
+
+/* heat map */
+.heat{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;align-items:start;margin-top:12px}
+.heat svg{width:100%;height:auto;display:block}
+.heat svg text{font-family:var(--mono)}
+.reg{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.reg li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;font-size:14.5px;line-height:1.3;padding-block:6px;border-bottom:1px solid var(--grid)}
+.reg .id{width:28px;height:28px;border-radius:50%;background:var(--dot);color:var(--dot-ink);font:600 11px var(--mono);display:grid;place-items:center}
+.reg .sc{font:600 13px var(--mono);color:var(--fg-2);text-align:right;white-space:nowrap}
+.ramp{display:flex;align-items:center;gap:6px;font:500 11px var(--mono);color:var(--muted);margin-top:10px}
+.ramp i{width:22px;height:10px;display:inline-block;border-radius:2px}
+
+/* roadmap */
+.road{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:8px}
+.phase{background:var(--surface);border-radius:8px;padding:12px 14px;min-width:0}
+.phase .d{font:600 12px var(--mono);color:var(--accent-ink)}
+.phase b{display:block;font:700 18px var(--display);font-stretch:88%;margin:2px 0 6px}
+.phase ul{margin:0;padding-left:1.05em;font-size:15px;line-height:1.4}
+.phase li{margin-bottom:.35em}
+.struct{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 12px}
+.struct span{font:600 12px var(--mono);padding:4px 9px;border-radius:999px;background:var(--surface);color:var(--fg)}
+
+/* drivers */
+.drivers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:6px}
+.drivers div{background:var(--surface);border-radius:8px;padding:11px 13px;min-width:0}
+.drivers b{display:block;font:700 16px var(--display);font-stretch:90%}
+.drivers p{margin:2px 0 0;font-size:15px;color:var(--fg-2);line-height:1.45}
+.eq{font:600 15px var(--mono);background:var(--surface);border-radius:8px;padding:10px 14px;margin:6px 0 12px;overflow-x:auto}
+.drill{margin-top:34px}
+.drill h3{font-size:22px;font-weight:750}
+
+/* multiple choice */
+.mc{margin-top:20px}
+.mc-head{display:flex;gap:10px;align-items:flex-start}
+.stem{font-weight:700;font-size:18px;line-height:1.45;margin:0 0 10px;flex:1;min-width:0}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;display:flex;gap:10px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);font:inherit;font-size:16px;line-height:1.45;cursor:pointer;width:100%}
+.opt:hover:not([disabled]){border-color:var(--muted)}
+.opt[disabled]{cursor:default}
+.opt .L{font:600 13px/1.6 var(--mono);color:var(--muted);flex:none}
+.opt .x{flex:1;min-width:0}
+.opt .tag{font:600 12px/1.7 var(--mono);white-space:nowrap;flex:none}
+.opt.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 10%,var(--surface))}
+.opt.right .tag{color:var(--good-ink)}
+.opt.wrong{border-color:var(--crit);background:color-mix(in srgb,var(--crit) 9%,var(--surface))}
+.opt.wrong .tag{color:var(--crit-ink)}
+.why{margin-top:10px;padding:13px 16px;border-radius:8px;background:var(--surface-2);font-size:16px}
+.why p:last-child{margin-bottom:0}
+.test .mc{border-top:1px solid var(--line);padding-top:20px;margin-top:22px}
+.test .mc:first-of-type{border-top:0;padding-top:0}
+.qn{font:600 13px var(--mono);color:var(--accent-ink);display:block;margin-bottom:2px}
+.scorebar{position:sticky;top:calc(env(safe-area-inset-top,0px) + 50px);z-index:5;display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:var(--bg);padding-block:10px;margin-top:14px;border-bottom:1px solid var(--line)}
+.score{font:700 22px var(--display);font-stretch:86%}
+.score small{font:500 12px var(--mono);color:var(--muted);margin-left:6px}
+.done{background:var(--accent-soft);border-radius:var(--r);padding:16px 18px;margin-top:24px}
+
+footer{padding-block:40px 64px;border-top:1px solid var(--line);font-size:14px;color:var(--fg-2)}
+
+#tip{position:fixed;z-index:50;pointer-events:none;background:var(--tip-bg);color:var(--tip-fg);font:500 12px/1.4 var(--mono);padding:6px 9px;border-radius:6px;max-width:260px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+
+@media (max-width:760px){
+  .branches{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .heat{grid-template-columns:minmax(0,1fr)}
+  .road{grid-template-columns:minmax(0,1fr)}
+  .multiples{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:600px){
+  body{font-size:16px}
+  .how{grid-template-columns:minmax(0,1fr)}
+  .split,.vocab,.drivers{grid-template-columns:minmax(0,1fr)}
+  .cycle{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cycle li:nth-child(2)::after{display:none}
+  .given{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hrow,.axis{grid-template-columns:minmax(0,1fr)}
+  .axis>div:first-child{display:none}
+  .iv p{font-size:18px}
+  .speed span{display:none}
+}
+@media (max-width:420px){
+  .branches{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:no-preference){
+  .ans:not([hidden]),.why:not([hidden]),.calc li:not([hidden]){animation:rise .28s ease-out}
+  @keyframes rise{from{transform:translateY(4px);opacity:.4}to{transform:none;opacity:1}}
+  html{scroll-behavior:smooth}
+}
+/* scoring register */
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 4px}
+.scorer li{grid-template-columns:auto minmax(0,1fr) auto}
+.scorer .nm{min-width:0}
+.pick{display:flex;gap:6px;align-items:center}
+.pick select{font:500 13px var(--mono);background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:4px 4px;min-width:44px}
+.pick .sc{min-width:34px}
+.reg .w{display:block;font-size:13px;color:var(--fg-2);margin-top:2px;line-height:1.35}
+.reg .nm b{font-weight:600}
+.mytop{font:600 15px/1.4 var(--body);margin:12px 0 0;color:var(--fg)}
+.mapnote{font:500 12px var(--mono);color:var(--fg-2);margin:8px 0 0}
+@media (max-width:420px){
+  .scorer li{grid-template-columns:auto minmax(0,1fr)}
+  .scorer .pick{grid-column:2}
+}
+@media (max-width:600px){.given>div:last-child:nth-child(odd){grid-column:1/-1}}
+</style>
+
+<nav class="rail" aria-label="Case steps">
+  <div class="rail-in">
+    <div class="chips" id="chips">
+      <a href="#primer">Primer</a><a href="#prompt">Prompt</a><a href="#clarify">Clarify</a><a href="#framework">Framework</a><a href="#ex1">Exhibit 1</a><a href="#ex2">Exhibit 2</a><a href="#sizing">Value it</a><a href="#prioritize">Prioritize</a><a href="#recommend">Recommend</a><a href="#drills">Drills</a><a href="#test">Test</a>
+    </div>
+    <label class="speed" for="rate"><span>Voice</span>
+      <select id="rate" aria-label="Read-aloud speed">
+        <option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option>
+      </select>
+    </label>
+  </div>
+</nav>
+
+<main>
+<header class="hero wrap">
+  <p class="eyebrow">Mock case 2 · PwC CMAAS · about 40 minutes</p>
+  <h1>BrightLeaf Foods</h1>
+  <p class="lede" data-say>A packaged-snack company wants to buy a fast-growing plant-based brand for 150 million dollars. You're the PwC CMAAS consultant checking whether the price holds up once the numbers are cleaned up, and which accounting risks to handle before closing.</p>
+  <ol class="how">
+    <li><b>Listen or read</b> the interviewer's prompt. Every step has a Listen button.</li>
+    <li><b>Answer out loud</b> before you reveal anything. Use the timers.</li>
+    <li><b>Compare</b> with the strong answer, then move to the next step.</li>
+  </ol>
+  <div class="hero-actions">
+    <a class="btn primary" href="#prompt">Start the case</a>
+    <a class="btn" href="#primer">2-minute primer first</a>
+    <a class="btn" href="#test">Jump to the practice test</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- 01 PRIMER -->
+<section class="step" id="primer">
+  <div class="sh"><span class="idx">01</span><h2>What CMAAS does in an acquisition</h2><button class="btn small listen" type="button">Listen</button></div>
+  <p class="def" data-say>When one company buys another, CMAAS helps make sure the deal is accounted for and reported correctly, from checking the target's accounting before signing to building the combined books after closing.</p>
+  <p class="sub" data-say>Put simply, three questions: are the target's numbers what they seem, what are we really paying for, and how will the deal show up in the buyer's financial statements?</p>
+
+  <div class="split">
+    <div class="panel">
+      <h3>Before signing</h3>
+      <p class="tag">Is the price built on real numbers?</p>
+      <ul data-say>
+        <li>Work alongside PwC's diligence team as they test the target's earnings.</li>
+        <li>Spot accounting policy differences between buyer and target.</li>
+        <li>Flag reporting needs, like audited target financials for an SEC filing.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>After closing</h3>
+      <p class="tag">Getting the combined books right</p>
+      <ul data-say>
+        <li>Purchase accounting: valuing what was bought, and the goodwill left over.</li>
+        <li>The opening balance sheet for the acquired business.</li>
+        <li>Aligning accounting policies, like how revenue is recorded.</li>
+        <li>SEC reporting for the deal, and bringing the target into the buyer's close and controls.</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="h-sec">What a first-year actually does</p>
+  <ul data-say style="margin:8px 0 0;padding-left:1.2em">
+    <li><b>Reading.</b> Go through the target's financials and key contracts to spot accounting issues.</li>
+    <li><b>Bridges.</b> Build the schedule that walks from reported earnings to adjusted earnings.</li>
+    <li><b>Policy maps.</b> Line up the target's accounting policies against the buyer's and list every difference.</li>
+    <li><b>Memos.</b> Help draft the accounting memo that explains how the deal is booked.</li>
+  </ul>
+
+  <p class="h-sec">The deal path</p>
+  <ol class="cycle" data-say aria-label="Diligence, sign, close, integrate">
+    <li><b>Diligence</b><span>Are the numbers real?</span></li>
+    <li><b>Sign</b><span>Price and terms agreed.</span></li>
+    <li><b>Close</b><span>Money changes hands.</span></li>
+    <li><b>Integrate</b><span>One set of books.</span></li>
+  </ol>
+  <p class="cycle-note">Accounting work runs through every stage</p>
+
+  <p class="h-sec">Ten terms to drop naturally</p>
+  <div class="vocab">
+    <div class="term" data-say><b>EBITDA</b><p>Earnings before interest, taxes, depreciation, and amortization. Roughly, the profit a business makes from its operations. Deals are often priced on it.</p></div>
+    <div class="term" data-say><b>Multiple</b><p>Price divided by EBITDA. Paying 150 million dollars for 10 million of EBITDA is a 15 times multiple.</p></div>
+    <div class="term" data-say><b>Quality of earnings</b><p>A diligence review that adjusts reported earnings for one-time items and accounting issues, to find the real, repeatable profit.</p></div>
+    <div class="term" data-say><b>Synergy</b><p>Extra value from combining two companies. Cost synergies are savings, like sharing factories. Revenue synergies are extra sales, and they're less certain.</p></div>
+    <div class="term" data-say><b>Goodwill</b><p>The part of the price above the fair value of everything you can identify, like inventory, equipment, and brand names. It's tested for impairment, meaning a write-down, at least once a year.</p></div>
+    <div class="term" data-say><b>Purchase price allocation</b><p>Splitting the price across the assets and liabilities you bought, at fair value. Whatever is left over is goodwill.</p></div>
+    <div class="term" data-say><b>Earnout</b><p>Part of the price paid later, only if the business hits agreed targets. It bridges the gap when buyer and seller disagree on value.</p></div>
+    <div class="term" data-say><b>Customer concentration</b><p>When a few customers make up a big share of sales. If one leaves, revenue drops fast.</p></div>
+    <div class="term" data-say><b>Trade promotions</b><p>Payments a food brand makes to retailers, like shelf fees and discounts. Under the revenue rules, they usually reduce revenue instead of counting as a marketing expense.</p></div>
+    <div class="term" data-say><b>Significant acquisition</b><p>When a public company buys a business that's big enough compared with itself, SEC rules require it to file that business's audited financial statements.</p></div>
+  </div>
+</section>
+
+<!-- 02 PROMPT -->
+<section class="step" id="prompt">
+  <div class="sh"><span class="idx">02</span><h2>The case prompt</h2><button class="btn small listen" type="button">Listen</button></div>
+  <div class="iv">
+    <p class="who">Interviewer</p>
+    <p data-say>Our client is BrightLeaf Foods, a public packaged-snack company with about 500 million dollars in revenue. Its core business is growing only about 2 percent a year.</p>
+    <p data-say>BrightLeaf wants to buy Sprout Kitchen, a younger plant-based snack brand. Sprout reports about 50 million dollars in revenue, growing 35 percent a year, and 10 million dollars of EBITDA, which is roughly its operating profit. Sprout's founders are asking 150 million dollars.</p>
+    <p data-say>BrightLeaf's CFO has asked PwC: is 150 million a fair price once we've checked Sprout's numbers, and what accounting and reporting risks do we need to handle before closing?</p>
+  </div>
+  <div class="facts">
+    <div><div class="k">BrightLeaf revenue</div><div class="v">$500M</div><div class="d">Growing about 2% a year</div></div>
+    <div><div class="k">Sprout revenue</div><div class="v">$50M</div><div class="d">Growing 35% a year, as reported</div></div>
+    <div><div class="k">Sprout EBITDA</div><div class="v">$10M</div><div class="d">As reported, not audited</div></div>
+    <div><div class="k">Asking price</div><div class="v">$150M</div><div class="d">15× reported EBITDA</div></div>
+  </div>
+  <div class="move">
+    <span class="lbl">Your move</span>
+    <p data-say>Restate the question in one sentence before you do anything else.</p>
+    <div class="acts"><button class="btn small timer" type="button" data-secs="20">20s timer</button><button class="btn primary small reveal" type="button" aria-controls="a-prompt" aria-expanded="false">Show a strong answer</button></div>
+  </div>
+  <div class="ans" id="a-prompt" hidden>
+    <p class="who">Strong answer</p>
+    <div class="script"><p data-say>"So we need to tell the CFO whether 150 million is a fair price once Sprout's numbers are checked, and which accounting and reporting risks to handle before closing. Is that right?"</p></div>
+    <p class="note" data-say>Interviewer: "That's right. The board votes in 4 weeks." Restating confirms the objective and shows you caught both halves of the question: the price, and the risks.</p>
+  </div>
+</section>
+
+<!-- 03 CLARIFY -->
+<section class="step" id="clarify">
+  <div class="sh"><span class="idx">03</span><h2>Clarifying questions</h2><button class="btn small listen" type="button">Listen</button></div>
+  <div class="move">
+    <span class="lbl">Your move</span>
+    <p data-say>Ask two or three clarifying questions. Pick ones whose answers would change your approach.</p>
+    <div class="acts"><button class="btn small timer" type="button" data-secs="60">60s timer</button><button class="btn primary small reveal" type="button" aria-controls="a-clarify" aria-expanded="false">Show strong questions</button></div>
+  </div>
+  <div class="ans" id="a-clarify" hidden>
+    <p class="who">Strong questions, with the interviewer's answers</p>
+    <ul class="qa">
+      <li data-say><div class="q">Why does BrightLeaf want Sprout?</div><div class="a">Growth. Its core snacks are flat, and plant-based is one of the faster-growing parts of the snack aisle.</div></li>
+      <li data-say><div class="q">What do similar deals sell for?</div><div class="a">Fast-growing snack brands have sold for about 12 to 16 times EBITDA. Mature snack companies, like BrightLeaf, trade at about 10 times.</div></li>
+      <li data-say><div class="q">Has anyone checked Sprout's numbers?</div><div class="a">Our diligence team just finished a quality of earnings review. We'll show you the results.</div></li>
+      <li data-say><div class="q">Have Sprout's financials ever been audited?</div><div class="a">No. A small local firm only reviewed them, which is a much lighter check than an audit.</div></li>
+      <li data-say><div class="q">What synergies does BrightLeaf expect?</div><div class="a">About 3 million dollars a year in cost savings from sharing factories and trucks, plus hoped-for extra sales from putting Sprout in BrightLeaf's stores.</div></li>
+      <li data-say><div class="q">What does success look like?</div><div class="a">A walk-away price, a recommended offer, and a short list of risks to handle before closing.</div></li>
+    </ul>
+    <p class="note" style="margin-top:12px" data-say>Skip questions that don't change your approach, like which flavors Sprout sells. Two or three sharp questions beat six generic ones.</p>
+  </div>
+</section>
+
+<!-- 04 FRAMEWORK -->
+<section class="step" id="framework">
+  <div class="sh"><span class="idx">04</span><h2>Build the framework</h2><button class="btn small listen" type="button">Listen</button></div>
+  <div class="iv">
+    <p class="who">Interviewer</p>
+    <p data-say>Great. How would you structure your approach to this problem?</p>
+  </div>
+  <div class="move">
+    <span class="lbl">Your move</span>
+    <p data-say>Take 60 seconds to sketch three or four buckets, then walk the interviewer through them out loud.</p>
+    <div class="acts"><button class="btn small timer" type="button" data-secs="60">60s timer</button><button class="btn primary small reveal" type="button" aria-controls="a-frame" aria-expanded="false">Show a strong framework</button></div>
+  </div>
+  <div class="ans" id="a-frame" hidden>
+    <p class="who">Strong framework</p>
+    <div class="tree">
+      <div class="root">Is $150M a fair price for Sprout, and which accounting risks must be handled before closing?</div>
+      <div class="branches">
+        <div class="branch"><span class="n">1</span><b>Strategic fit</b><ul><li>Why buy: growth vs. a flat core</li><li>Fit with BrightLeaf's stores and plants</li><li>Buy vs. build its own brand</li></ul></div>
+        <div class="branch"><span class="n">2</span><b>Quality of the numbers</b><ul><li>Reported vs. adjusted EBITDA</li><li>Revenue and policy differences</li><li>One-time items, customer concentration</li></ul></div>
+        <div class="branch"><span class="n">3</span><b>Value and price</b><ul><li>Standalone value: EBITDA × multiple</li><li>Synergies, minus integration costs</li><li>Walk-away price vs. the ask</li></ul></div>
+        <div class="branch"><span class="n">4</span><b>Deal risks and plan</b><ul><li>Audit and SEC reporting needs</li><li>Purchase accounting, goodwill</li><li>Terms: price, earnout, conditions</li></ul></div>
+      </div>
+    </div>
+    <h3>Say it like this</h3>
+    <div class="script">
+      <p data-say>"I'd break this into four parts. First, strategic fit: why BrightLeaf wants Sprout, and whether buying beats building. Second, the quality of Sprout's numbers: what its real, repeatable EBITDA is once we adjust for one-time items and accounting differences. Third, value and price: what Sprout is worth on its own, plus realistic synergies, compared with the 150 million ask. Fourth, deal risks and the plan: audit and SEC reporting needs, purchase accounting, and the terms that protect BrightLeaf. My early guess is that the reported 10 million of EBITDA is too high, so I'd like to start with Sprout's results and the diligence findings."</p>
+    </div>
+    <h3>Why it works</h3>
+    <ul data-say>
+      <li>It answers both halves of the question: the price, and the risks.</li>
+      <li>The buckets flow: why, what it really earns, what it's worth, how to do the deal safely.</li>
+      <li>It ends with a hypothesis about where to start, which hands the interviewer a natural next step.</li>
+    </ul>
+    <p class="note" data-say>If you blank, "fit, numbers, value, risks" is a backup list that works for almost any acquisition case.</p>
+  </div>
+</section>
+
+<!-- 05 EXHIBIT 1 -->
+<section class="step" id="ex1">
+  <div class="sh"><span class="idx">05</span><h2>Exhibit 1: Sprout's growth story</h2><button class="btn small listen" type="button">Listen</button></div>
+  <div class="iv">
+    <p class="who">Interviewer</p>
+    <p data-say>Good place to start. Here are six quarters of Sprout's results. What stands out to you?</p>
+  </div>
+  <figure class="ex">
+    <div class="ex-h"><span class="ex-t">Sprout Kitchen, last six quarters</span><span class="ex-ref">Exhibit 1 · WP-TGT-01</span></div>
+    <p class="ex-s">Per quarter, Q2 2025 to Q3 2026. Each panel has its own scale, starting at zero.</p>
+    <div class="multiples" id="mult"></div>
+    <div class="row" style="margin-top:12px"><button class="btn small reveal" type="button" aria-controls="t-ex1" aria-expanded="false">Show as table</button></div>
+    <div class="tblwrap" id="t-ex1" hidden></div>
+    <figcaption>Source: Sprout management reports, not audited (case data).</figcaption>
+  </figure>
+
+  <div class="mc" data-answer="1">
+    <div class="mc-head"><p class="stem" data-say>Which finding should you lead with?</p></div>
+    <div class="opts">
+      <button class="opt" type="button" data-say>Revenue went from 9 to 13 million a quarter, so the 35 percent growth is solid.</button>
+      <button class="opt" type="button" data-say>Growth leans more and more on one retailer, margins are slipping as promotions rise, and the Q1 spike looks like a one-time order.</button>
+      <button class="opt" type="button" data-say>Repeat purchases are the main problem.</button>
+      <button class="opt" type="button" data-say>Sprout doubled its store count, so it's worth more than the ask.</button>
+    </div>
+    <div class="why" hidden>
+      <p data-say>Revenue jumped to 14 million in Q1 2026, then fell back to 12. That's a launch order to fill a big retailer's shelves, and it won't repeat. The top retailer's share of sales went from 25 percent to about 40 percent. Gross margin slid from 42 percent to 36 percent while trade promotion spend doubled. Repeat purchases are healthy at about 40 percent, so customers like the product. The real question is how much of the growth and profit will last.</p>
+    </div>
+  </div>
+
+  <div class="move">
+    <span class="lbl">Then</span>
+    <p data-say>Say the insight out loud, tie it to the price, and ask for the next piece of data.</p>
+    <div class="acts"><button class="btn primary small reveal" type="button" aria-controls="a-ex1" aria-expanded="false">Show how to say it</button></div>
+  </div>
+  <div class="ans" id="a-ex1" hidden>
+    <p class="who">Say it like this</p>
+    <div class="script"><p data-say>"Customers clearly like Sprout, since repeat purchases are steady at about 40 percent. But three things worry me for the price. The Q1 spike looks like a one-time launch order. One retailer now drives about 40 percent of sales. And margins are slipping as promotion spend rises. So I'd expect the real, repeatable EBITDA to be lower than 10 million. What did the quality of earnings review find?"</p></div>
+    <p class="note" data-say>Notice the pattern: insight, then so-what for the price, then a hypothesis-driven ask. That ask leads the interviewer to Exhibit 2.</p>
+  </div>
+</section>
+
+<!-- 06 EXHIBIT 2 -->
+<section class="step" id="ex2">
+  <div class="sh"><span class="idx">06</span><h2>Exhibit 2: quality of earnings</h2><button class="btn small listen" type="button">Listen</button></div>
+  <div class="iv">
+    <p class="who">Interviewer</p>
+    <p data-say>Good instinct. Here's the bridge from Sprout's reported EBITDA to what our diligence team thinks is repeatable. What's your read?</p>
+  </div>
+  <figure class="ex">
+    <div class="ex-h"><span class="ex-t">From reported to adjusted EBITDA</span><span class="ex-ref">Exhibit 2 · WP-QOE-02</span></div>
+    <p class="ex-s">Last 12 months, $ millions. Blue bars are totals; orange bars are adjustments.</p>
+    <div class="hbar" id="qoe"></div>
+    <p class="tolnote">Also found: Sprout booked $4M of payments to retailers (shelf fees and discounts) as marketing. Under the revenue rules they reduce revenue, so revenue falls from $50M to $46M. EBITDA doesn't change.</p>
+    <figcaption>Source: PwC quality of earnings review (case data).</figcaption>
+  </figure>
+
+  <div class="mc" data-answer="2">
+    <div class="mc-head"><p class="stem" data-say>What's the so-what?</p></div>
+    <div class="opts">
+      <button class="opt" type="button" data-say>The trade promotion fix cuts EBITDA by 4 million.</button>
+      <button class="opt" type="button" data-say>The adjustments are small, so 150 million is fine.</button>
+      <button class="opt" type="button" data-say>Sprout's repeatable EBITDA is about 8 million, not 10. At 15 times, that's about 120 million, so the ask only works if BrightLeaf pays for synergies.</button>
+      <button class="opt" type="button" data-say>Sprout committed fraud, so BrightLeaf should walk away.</button>
+    </div>
+    <div class="why" hidden>
+      <p data-say>Three adjustments take EBITDA from 10 million to 8 million: the one-time launch order, a founder salary below what a new CEO would cost, and expired inventory that was never written off. The trade promotion change cuts revenue by 4 million but not EBITDA, because the cost just moves from an expense line to a revenue reduction. Everyday version: if a 4 dollar "sale" was really a 4 dollar discount, your sales go down by 4 dollars, but the money you keep doesn't change. None of this is fraud. It's what a young company's books often look like.</p>
+    </div>
+  </div>
+
+  <div class="move">
+    <span class="lbl">Then</span>
+    <p data-say>Synthesize both exhibits in three sentences.</p>
+    <div class="acts"><button class="btn primary small reveal" type="button" aria-controls="a-ex2" aria-expanded="false">Show how to say it</button></div>
+  </div>
+  <div class="ans" id="a-ex2" hidden>
+    <p class="who">Say it like this</p>
+    <div class="script"><p data-say>"Sprout's real, repeatable EBITDA is about 8 million, not 10, once we remove the launch order, adjust the founder's salary, and write off expired inventory. Its revenue is also about 46 million, not 50, once retailer payments are treated correctly. At 15 times 8 million, Sprout is worth about 120 million on its own, so the 150 million ask needs about 30 million of synergies to make sense."</p></div>
+  </div>
+</section>
+
+<!-- 07 VALUE IT -->
+<section class="step" id="sizing">
+  <div class="sh"><span class="idx">07</span><h2>Value it, then size the biggest risk</h2><button class="btn small listen" type="button">Listen</button></div>
+  <p class="sub" data-say>Same skills as market sizing: state the formula, make clear assumptions, do clean math, then sanity-check. Here you add one risk-sizing step: expected loss equals impact times chance.</p>
+  <div class="iv">
+    <p class="who">Interviewer</p>
+    <p data-say>The CFO wants a walk-away price: the most BrightLeaf should pay. Then factor in the risk of losing that big retailer. What would you offer?</p>
+  </div>
+  <div class="given">
+    <div><div class="k">Adjusted EBITDA</div><div class="v">$8M</div></div>
+    <div><div class="k">Multiple for Sprout on its own</div><div class="v">15×</div></div>
+    <div><div class="k">Cost synergies per year</div><div class="v">$3M</div></div>
+    <div><div class="k">Multiple for synergies*</div><div class="v">10×</div></div>
+    <div><div class="k">One-time integration cost</div><div class="v">$5M</div></div>
+    <div><div class="k">Chance top retailer drops Sprout in 2 years</div><div class="v">20%</div></div>
+    <div><div class="k">Yearly EBITDA lost if it does</div><div class="v">$3M</div></div>
+    <div><div class="k">Revenue synergies</div><div class="v">Upside only</div></div>
+    <div><div class="k">Asking price</div><div class="v">$150M</div></div>
+  </div>
+  <p class="src">*Cost savings are steady, like BrightLeaf's own mature earnings, so value them at BrightLeaf's multiple of about 10. Revenue synergies are too uncertain to pay for upfront.</p>
+  <div class="move">
+    <span class="lbl">Your move</span>
+    <p data-say>Say the formula first: value equals EBITDA times a multiple. Build the walk-away price, then subtract the expected cost of the retailer risk.</p>
+    <div class="acts"><button class="btn small timer" type="button" data-secs="120">2 min timer</button></div>
+  </div>
+  <div class="stepper" style="margin-top:14px">
+    <ol class="calc">
+      <li class="st" hidden data-say="Step 1. Standalone value. 8 million of adjusted EBITDA times 15 equals 120 million dollars."><span class="t">1 · Standalone value</span><span class="f">$8M × 15</span><span class="r tnum">$120M</span></li>
+      <li class="st" hidden data-say="Step 2. Value of synergies. 3 million a year times 10 is 30 million, minus 5 million of one-time integration cost, equals 25 million dollars."><span class="t">2 · Net synergy value</span><span class="f">$3M × 10 − $5M</span><span class="r tnum">$25M</span></li>
+      <li class="st" hidden data-say="Step 3. Walk-away price before risk. 120 million plus 25 million equals 145 million. That's already 5 million below the 150 million ask."><span class="t">3 · Walk-away price, before risk</span><span class="f">$120M + $25M. Already below the $150M ask</span><span class="r tnum">$145M</span></li>
+      <li class="st" hidden data-say="Step 4. Impact if the top retailer leaves. Losing 3 million of EBITDA a year, at 15 times, wipes out 45 million dollars of value."><span class="t">4 · Impact if the retailer leaves</span><span class="f">$3M × 15</span><span class="r tnum">$45M</span></li>
+      <li class="st" hidden data-say="Step 5. Expected loss. 45 million times a 20 percent chance equals 9 million dollars. So the risk-adjusted walk-away price is 145 minus 9, or 136 million."><span class="t">5 · Expected loss, and risk-adjusted price</span><span class="f">$45M × 20% = $9M. $145M − $9M</span><span class="r tnum">$136M</span></li>
+      <li class="st" hidden data-say="Step 6. The offer. Pay about 125 million upfront, plus an earnout of up to 20 million if Sprout keeps the retailer and hits sales targets. The most BrightLeaf ever pays is 145 million, and only if the risk doesn't happen. Sanity check: 125 million is about 16 times adjusted EBITDA, at the top of the 12 to 16 times range for similar deals."><span class="t">6 · The offer</span><span class="f">$125M upfront + earnout up to $20M. Max $145M, only if the risk doesn't happen</span><span class="r tnum">$125M + $20M</span></li>
+    </ol>
+    <div class="row"><button class="btn primary small next" type="button">Reveal step 1 of 6</button><button class="btn small reset" type="button">Start over</button></div>
+  </div>
+
+  <figure class="ex">
+    <div class="ex-h"><span class="ex-t">Building the walk-away price</span><span class="ex-ref">Valuation · $ millions</span></div>
+    <div class="legend"><span><i style="background:var(--s1)"></i>Standalone value</span><span><i style="background:var(--s2)"></i>Net synergies, after risk where shown</span></div>
+    <div class="hbar" id="val"></div>
+    <figcaption>The vertical line is the $150M ask. Every version of the value lands below it.</figcaption>
+  </figure>
+
+  <div class="mc" data-answer="2">
+    <div class="mc-head"><p class="stem" data-say>Quick check: what's the expected cost of the retailer risk?</p></div>
+    <div class="opts">
+      <button class="opt" type="button" data-say>3 million dollars</button>
+      <button class="opt" type="button" data-say>45 million dollars</button>
+      <button class="opt" type="button" data-say>9 million dollars</button>
+      <button class="opt" type="button" data-say>600 thousand dollars</button>
+    </div>
+    <div class="why" hidden><p data-say>45 million dollars of lost value times a 20 percent chance is 9 million. 45 million is the impact if it happens, not the expected cost. Everyday version: a 45 dollar concert ticket with a 1 in 5 chance the show gets canceled is worth about 36 dollars to you, not 45.</p></div>
+  </div>
+
+  <div class="chipset" aria-label="Formulas">
+    <span><b>Standalone</b> = $8M × 15 = $120M</span>
+    <span><b>Synergies</b> = $3M × 10 − $5M = $25M</span>
+    <span><b>Risk</b> = $45M × 20% = $9M</span>
+  </div>
+  <div class="move">
+    <span class="lbl">Then</span>
+    <p data-say>Summarize the math in two sentences, and add one sanity check.</p>
+    <div class="acts"><button class="btn primary small reveal" type="button" aria-controls="a-size" aria-expanded="false">Show how to say it</button></div>
+  </div>
+  <div class="ans" id="a-size" hidden>
+    <p class="who">Say it like this</p>
+    <div class="script"><p data-say>"On its own, Sprout is worth about 120 million: 8 million of real EBITDA at 15 times. Cost synergies add about 25 million after integration costs, so the most BrightLeaf should pay is about 145 million, already below the ask, and about 136 million once we allow for the retailer risk. I'd offer about 125 million upfront plus an earnout of up to 20 million, which is still about 16 times real EBITDA, the top of the range for similar deals."</p></div>
+    <p class="note" data-say>If the interviewer pushes back that the founders won't take less than 150: "Then BrightLeaf should be ready to walk away. Paying 150 means handing all the synergies to Sprout's owners and taking the retailer risk for free. The earnout gets them closer to their number, but only if the business delivers."</p>
+  </div>
+</section>
+
+<!-- 08 PRIORITIZE -->
+<section class="step" id="prioritize">
+  <div class="sh"><span class="idx">08</span><h2>Score and prioritize on a heat map</h2><button class="btn small listen" type="button">Listen</button></div>
+  <div class="iv">
+    <p class="who">Interviewer</p>
+    <p data-say>Here are the deal risks the team has logged. Score each one for likelihood and impact, from 1 to 5, with one reason for each. Which three should BrightLeaf handle before closing, and why?</p>
+  </div>
+  <figure class="ex">
+    <div class="ex-h"><span class="ex-t">Risk heat map: likelihood × impact</span><span class="ex-ref">Exhibit 3 · Deal risk log</span></div>
+    <div class="seg" role="group" aria-label="Which scores to plot">
+      <button class="btn small" type="button" id="mMine" aria-pressed="true">Your scores</button>
+      <button class="btn small" type="button" id="mTeam" aria-pressed="false" disabled>Team's scores</button>
+    </div>
+    <div class="heat">
+      <div>
+        <div id="heatmap"></div>
+        <p class="mapnote" id="mapnote">Your dots appear here as you score each risk.</p>
+      </div>
+      <div>
+        <p class="mapnote" style="margin:0 0 6px">Pick L (likelihood) and I (impact): 1 is low, 5 is high.</p>
+        <ul class="reg scorer" id="scorer"></ul>
+        <p class="mytop" id="mytop" aria-live="polite">Score all six to see your top three.</p>
+        <div class="ramp" aria-hidden="true">Score <i style="background:var(--h1)"></i><i style="background:var(--h2)"></i><i style="background:var(--h3)"></i><i style="background:var(--h4)"></i><i style="background:var(--h5)"></i> higher</div>
+      </div>
+    </div>
+    <figcaption>Score = likelihood × impact. Risks are from the case data; scores are yours to set.</figcaption>
+  </figure>
+
+  <div class="move">
+    <span class="lbl">Your move</span>
+    <p data-say>Score each risk out loud with a one-line reason, then name your top three.</p>
+    <div class="acts"><button class="btn small timer" type="button" data-secs="120">2 min timer</button><button class="btn primary small reveal" type="button" id="rv-prio" aria-controls="a-prio" aria-expanded="false">Show the team's scores</button></div>
+  </div>
+  <div class="ans" id="a-prio" hidden>
+    <p class="who">The team's scores, with reasons</p>
+    <ul class="reg" id="teamlist"></ul>
+    <h3>Say it like this</h3>
+    <div class="script"><p data-say>"I'd handle three things before closing. First, the audit: Sprout has never had one, and BrightLeaf may need audited Sprout financials for the SEC soon after closing. Second, the top retailer, at 40 percent of sales, so I'd want a renewed contract or an earnout. Third, the price itself: paying more than about 136 million means booking goodwill that could be written down later. The revenue policy change is certain, but it's a messaging issue, not a value issue."</p></div>
+  </div>
+
+  <div class="mc" data-answer="0">
+    <div class="mc-head"><p class="stem" data-say>Which three come first?</p></div>
+    <div class="opts">
+      <button class="opt" type="button" data-say>R2, R1, and R4: the audit, the top retailer, and overpaying.</button>
+      <button class="opt" type="button" data-say>R3, R5, and R6: the revenue policy change, controls, and inventory.</button>
+      <button class="opt" type="button" data-say>R3, R4, and R6.</button>
+      <button class="opt" type="button" data-say>All six at once, with equal effort.</button>
+    </div>
+    <div class="why" hidden>
+      <p data-say>R2 scores highest: the audit takes months and the SEC deadline doesn't move. R1 and R4 tie next, and they're backed by the exhibits: 40 percent concentration, and a price above every version of the value. R3 is certain but moves revenue, not profit. R5 matters, but BrightLeaf has some time after closing to bring Sprout into its controls. R6 is small next to the price.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 09 RECOMMEND -->
+<section class="step" id="recommend">
+  <div class="sh"><span class="idx">09</span><h2>The recommendation</h2><button class="btn small listen" type="button">Listen</button></div>
+  <div class="iv">
+    <p class="who">Interviewer</p>
+    <p data-say>The CFO just walked in. You have 60 seconds. What's your recommendation?</p>
+  </div>
+  <div class="move">
+    <span class="lbl">Your move</span>
+    <p data-say>Lead with the answer. Then three reasons, the main risk, and next steps.</p>
+    <div class="acts"><button class="btn small timer" type="button" data-secs="60">60s timer</button><button class="btn primary small reveal" type="button" aria-controls="a-rec" aria-expanded="false">Show a strong answer</button></div>
+  </div>
+  <div class="ans" id="a-rec" hidden>
+    <p class="who">Strong answer</p>
+    <div class="struct"><span>Answer</span><span>3 reasons</span><span>Risk</span><span>Next steps</span></div>
+    <div class="script">
+      <p data-say>"BrightLeaf should buy Sprout Kitchen, but not at 150 million. I'd offer about 125 million upfront, plus an earnout of up to 20 million tied to keeping the top retailer and hitting sales targets."</p>
+      <p data-say>"First, the real profit is lower. After cleaning up the numbers, Sprout's repeatable EBITDA is about 8 million, not 10, so it's worth about 120 million on its own."</p>
+      <p data-say>"Second, the synergies are real, but they should be shared, not handed over. Cost savings add about 25 million after integration costs, which puts the walk-away price at about 145 million, already below the ask."</p>
+      <p data-say>"Third, one retailer is 40 percent of sales. Allowing for the chance of losing it brings the value to about 136 million. The earnout means BrightLeaf only pays more if that risk doesn't happen."</p>
+      <p data-say>"The main risk is that the founders say no and BrightLeaf loses the deal. That's acceptable: overpaying would create goodwill we might have to write down later. Next steps: start a full audit of Sprout now so any SEC filing is ready after closing, map Sprout's accounting policies to BrightLeaf's, starting with trade promotions, and plan the purchase price allocation with our valuation team."</p>
+    </div>
+    <h3>The 90-day plan</h3>
+    <div class="road">
+      <div class="phase" data-say><span class="d">Days 1–30</span><b>Before signing</b><ul><li>Start a full audit of Sprout.</li><li>Get the top retailer's contract terms and renewal date.</li><li>Agree the offer and earnout targets.</li></ul></div>
+      <div class="phase" data-say><span class="d">Days 31–60</span><b>Signing to closing</b><ul><li>Map every accounting policy difference.</li><li>Draft the deal accounting memo.</li><li>Plan the purchase price allocation with valuation specialists.</li></ul></div>
+      <div class="phase" data-say><span class="d">Days 61–90</span><b>After closing</b><ul><li>Book the opening balance sheet and goodwill.</li><li>File any required SEC reports for the deal.</li><li>Bring Sprout into BrightLeaf's monthly close and controls.</li></ul></div>
+    </div>
+    <h3>Indicators to track</h3>
+    <ul data-say>
+      <li>Top retailer's share of Sprout's sales. Target: below 35 percent within two years.</li>
+      <li>Cost synergies captured. Target: 3 million dollars a year by year two.</li>
+      <li>Sprout in BrightLeaf's monthly close. Target: within two months of closing.</li>
+      <li>Earnout milestones hit, checked every quarter.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 10 DRILLS -->
+<section class="step" id="drills">
+  <div class="sh"><span class="idx">10</span><h2>Bonus drills: market sizing and growth</h2><button class="btn small listen" type="button">Listen</button></div>
+  <p class="sub">Two short reps in case the interviewer switches to a classic consulting question.</p>
+
+  <div class="drill">
+    <h3>Market sizing: plant-based snacks</h3>
+    <div class="iv">
+      <p class="who">Interviewer</p>
+      <p data-say>Estimate the yearly U.S. market for plant-based snack brands like Sprout.</p>
+    </div>
+    <div class="move">
+      <span class="lbl">Your move</span>
+      <p data-say>Go top-down. Start with households, narrow to buyers, then multiply by what each spends in a year. Say each assumption out loud.</p>
+      <div class="acts"><button class="btn small timer" type="button" data-secs="90">90s timer</button></div>
+    </div>
+    <div class="stepper" style="margin-top:14px">
+      <ol class="calc">
+        <li class="st" hidden data-say="Start broad. There are about 130 million households in the U.S."><span class="t">Start broad</span><span class="f">U.S. households</span><span class="r tnum">≈130M</span></li>
+        <li class="st" hidden data-say="Times 25 percent that buy plant-based snacks at least once a month. That's about 33 million households."><span class="t">× 25% buy plant-based snacks monthly</span><span class="f">Buying households</span><span class="r tnum">≈33M</span></li>
+        <li class="st" hidden data-say="Spend per household. About 2 packs a month at 5 dollars each is 10 dollars a month, or 120 dollars a year."><span class="t">Spend per household</span><span class="f">2 packs × $5 × 12 months</span><span class="r tnum">$120 / yr</span></li>
+        <li class="st" hidden data-say="33 million households times 120 dollars is about 4 billion dollars a year."><span class="t">Market size</span><span class="f">33M × $120</span><span class="r tnum">≈$4B</span></li>
+        <li class="st" hidden data-say="Sanity check. Sprout's 50 million would be just over 1 percent of that, which fits a young, fast-growing brand."><span class="t">Sanity check</span><span class="f">Sprout's $50M ≈ just over 1% share. Fits a young brand</span><span class="r tnum">✓</span></li>
+        <li class="st" hidden data-say="Growth check. If the market grows 10 percent a year, the rule of 72 says it doubles in about 7 years. Sprout growing 35 percent means it's taking share. The interviewer is grading your structure, not the exact number."><span class="t">Growth check</span><span class="f">10% a year doubles in about 7 years (72 ÷ 10). Sprout at 35% is taking share</span><span class="r tnum">✓</span></li>
+      </ol>
+      <div class="row"><button class="btn primary small next" type="button">Reveal step 1 of 6</button><button class="btn small reset" type="button">Start over</button></div>
+    </div>
+    <p class="src">All inputs are interview-style assumptions, not market research.</p>
+  </div>
+
+  <div class="drill">
+    <h3>Market growth: does it justify the price?</h3>
+    <div class="iv">
+      <p class="who">Interviewer</p>
+      <p data-say>Will plant-based snacking keep growing, and what does that mean for the price we pay?</p>
+    </div>
+    <div class="move">
+      <span class="lbl">Your move</span>
+      <p data-say>Split growth into more buyers and more spend per buyer, list drivers and headwinds, then link it back to the multiple.</p>
+      <div class="acts"><button class="btn small timer" type="button" data-secs="60">60s timer</button><button class="btn primary small reveal" type="button" aria-controls="a-growth" aria-expanded="false">Show a strong answer</button></div>
+    </div>
+    <div class="ans" id="a-growth" hidden>
+      <p class="who">Strong answer</p>
+      <div class="eq">Market growth = more buyers × more spend per buyer</div>
+      <div class="drivers">
+        <div data-say><b>Health-minded shoppers</b><p>More people want snacks with simple, plant-based ingredients.</p></div>
+        <div data-say><b>Shelf space</b><p>Retailers give growing categories more room, which brings new buyers.</p></div>
+        <div data-say><b>Younger buyers</b><p>Younger shoppers try new brands more often and stick with ones they like.</p></div>
+        <div data-say><b>New products</b><p>New flavors and formats raise how much each buyer spends.</p></div>
+      </div>
+      <h3>Headwinds</h3>
+      <ul data-say>
+        <li>Plant-based meat sales fell after an early boom, so hype can fade.</li>
+        <li>Price-sensitive shoppers trade down to cheaper store brands.</li>
+        <li>Big food companies are launching their own plant-based lines.</li>
+      </ul>
+      <h3>Quick math</h3>
+      <p data-say>Sprout grows 35 percent a year; the market about 10. If Sprout's growth slows to the market's pace, a 15 times multiple looks expensive. That's one more reason to put part of the price in an earnout.</p>
+      <div class="script"><p data-say>"I expect the category to keep growing, but more slowly than Sprout is growing today. A 15 times multiple assumes that fast growth continues, so I'd pay for the growth we can see and use an earnout for the growth we're hoping for."</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 TEST -->
+<section class="step test" id="test">
+  <div class="sh"><span class="idx">11</span><h2>Practice test</h2><button class="btn small listen" type="button">Listen</button></div>
+  <p class="sub" data-say>Twelve multiple-choice questions on deal concepts and the BrightLeaf case. Pick an answer to see the explanation.</p>
+  <div class="scorebar"><span class="score" id="score">0 / 0<small>answered 0 of 12</small></span><button class="btn small" type="button" id="resetTest">Reset test</button></div>
+  <div id="testq"></div>
+  <div class="done" id="done" hidden></div>
+</section>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Case figures, exhibits, and both companies are invented for practice. Descriptions of CMAAS work are general and based on PwC's public <a href="https://www.pwc.com/us/en/services/consulting/deals/capital-markets/capital-markets-accounting-advisory-services.html" target="_blank" rel="noopener">Capital Markets and Accounting Advisory Services</a> page.</p>
+    <p>Night-before tip: run steps 06, 07, and 09 out loud once more in the morning, then take the test.</p>
+  </div>
+</footer>
+<div id="tip" hidden role="tooltip"></div>
+
+<script>
+(function(){
+  "use strict";
+  const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+  const NS="http://www.w3.org/2000/svg";
+  const svgEl=(t,a={})=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  const LET="ABCD";
+
+  /* ---------- tooltip ---------- */
+  const tip=$("#tip");
+  function showTip(el,x,y){tip.textContent=el.getAttribute("data-tip");tip.hidden=false;
+    const w=tip.offsetWidth,h=tip.offsetHeight;let L=x+12,T=y-h-10;
+    if(L+w>innerWidth-8)L=x-w-12; if(T<8)T=y+14; tip.style.left=Math.max(8,L)+"px";tip.style.top=T+"px";}
+  document.addEventListener("pointermove",e=>{const t=e.target.closest&&e.target.closest("[data-tip]");if(t)showTip(t,e.clientX,e.clientY);else tip.hidden=true;});
+  document.addEventListener("focusin",e=>{const t=e.target.closest&&e.target.closest("[data-tip]");if(t){const r=t.getBoundingClientRect();showTip(t,r.left+r.width/2,r.top);}});
+  document.addEventListener("focusout",()=>{tip.hidden=true;});
+  addEventListener("scroll",()=>{tip.hidden=true;},{passive:true});
+
+  /* ---------- reveal toggles ---------- */
+  $$(".reveal").forEach(b=>{const t=document.getElementById(b.getAttribute("aria-controls"));const show=b.textContent;
+    const hide=show.startsWith("Show as")?"Hide table":"Hide";
+    b.addEventListener("click",()=>{const open=t.hidden;t.hidden=!open;b.setAttribute("aria-expanded",String(open));b.textContent=open?hide:show;});});
+
+  /* ---------- timers ---------- */
+  let actx=null;
+  function beep(){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=880;g.gain.setValueAtTime(.0001,actx.currentTime);g.gain.exponentialRampToValueAtTime(.2,actx.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+.5);o.connect(g).connect(actx.destination);o.start();o.stop(actx.currentTime+.55);}catch(e){}}
+  $$(".timer").forEach(b=>{const secs=+b.dataset.secs,label=b.textContent;let id=null,left=0;
+    const fmt=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+    b.addEventListener("click",()=>{
+      if(id){clearInterval(id);id=null;b.textContent=label;b.setAttribute("aria-pressed","false");return;}
+      try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();}catch(e){}
+      left=secs;b.textContent=fmt(left)+" · stop";b.setAttribute("aria-pressed","true");
+      id=setInterval(()=>{left--;if(left<=0){clearInterval(id);id=null;b.textContent="Time. Answer now";b.setAttribute("aria-pressed","false");beep();setTimeout(()=>{if(!id)b.textContent=label;},4000);return;}b.textContent=fmt(left)+" · stop";},1000);
+    });});
+
+  /* ---------- steppers ---------- */
+  $$(".stepper").forEach(s=>{const steps=$$(".st",s),next=$(".next",s),reset=$(".reset",s);let i=0;
+    const upd=()=>{next.hidden=i>=steps.length;next.textContent="Reveal step "+(i+1)+" of "+steps.length;};
+    next.addEventListener("click",()=>{if(i<steps.length){steps[i].hidden=false;i++;upd();}});
+    reset.addEventListener("click",()=>{steps.forEach(x=>x.hidden=true);i=0;upd();});upd();});
+
+
+  /* ---------- Exhibit 1: small multiples ---------- */
+  const Q=["Q2'25","Q3'25","Q4'25","Q1'26","Q2'26","Q3'26"];
+  const pct=v=>v+"%";
+  const SER=[
+    {k:"Revenue",v:[9,10,11,14,12,13],f:v=>"$"+v+"M"},
+    {k:"Top retailer's share of sales",v:[25,28,32,45,40,41],f:pct},
+    {k:"Gross margin",v:[42,41,40,38,37,36],f:pct},
+    {k:"Trade promotion spend",v:[0.6,0.7,0.8,1.2,1.1,1.2],f:v=>"$"+v.toFixed(1)+"M"},
+    {k:"Repeat purchase rate",v:[38,39,40,40,41,41],f:pct},
+    {k:"Stores carrying Sprout",v:[4,5,6,9,9,10],f:v=>v+"K"},
+  ];
+  function niceMax(m){const steps=[1,1.5,2,2.5,3,4,5,10,15,20,25,30,40,50,60,80,100,120,150,200];for(const s of steps)if(s>=m)return s;return Math.ceil(m/100)*100;}
+  function roundTop(x,y,w,h,r){r=Math.min(r,h,w/2);return `M${x},${y+h}V${y+r}Q${x},${y} ${x+r},${y}H${x+w-r}Q${x+w},${y} ${x+w},${y+r}V${y+h}Z`;}
+  const mult=$("#mult");
+  SER.forEach(s=>{
+    const f=s.f||(v=>String(v)),n=s.v.length,last=n-1;
+    const card=document.createElement("div");card.className="mini";
+    card.innerHTML=`<div class="nm">${s.k}</div><div class="ch">${f(s.v[0])} → ${f(s.v[last])}</div>`;
+    const W=200,H=104,top=18,bot=20,pl=4,pr=4,ph=H-top-bot,band=(W-pl-pr)/n,bw=18,max=niceMax(Math.max(...s.v)*1.12);
+    const svg=svgEl("svg",{viewBox:`0 0 ${W} ${H}`,role:"img","aria-label":`${s.k}: ${s.v.map((v,i)=>Q[i]+" "+f(v)).join(", ")}`});
+    s.v.forEach((v,i)=>{const cx=pl+band*i+band/2,h=Math.max(1,v/max*ph),x=cx-bw/2,y=top+ph-h;
+      svg.appendChild(svgEl("path",{d:roundTop(x,y,bw,h,4),fill:"var(--s1)"}));
+      if(i===0||i===last){const t=svgEl("text",{x:cx,y:y-5,"text-anchor":"middle","font-size":"10.5","font-weight":"600",fill:"var(--fg-2)"});t.textContent=f(v);svg.appendChild(t);}
+      const q=svgEl("text",{x:cx,y:H-5,"text-anchor":"middle","font-size":"8.5",fill:"var(--muted)"});q.textContent=Q[i];svg.appendChild(q);
+      svg.appendChild(svgEl("rect",{x:pl+band*i,y:0,width:band,height:H,fill:"transparent","data-tip":`${s.k} · ${Q[i]}: ${f(v)}`}));
+    });
+    svg.insertBefore(svgEl("line",{x1:0,x2:W,y1:top+ph+.5,y2:top+ph+.5,stroke:"var(--axis)","stroke-width":"1"}),svg.firstChild);
+    card.appendChild(svg);mult.appendChild(card);
+  });
+  $("#t-ex1").innerHTML=`<table><thead><tr><th>Measure</th>${Q.map(q=>`<th class="n">${q}</th>`).join("")}</tr></thead><tbody>${SER.map(s=>`<tr><td>${s.k}</td>${s.v.map(v=>`<td class="n">${s.f(v)}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+
+  /* ---------- Exhibit 2: EBITDA bridge (waterfall) ---------- */
+  const QOE=[
+    {n:"Reported EBITDA",d:"As Sprout reports it",total:10},
+    {n:"One-time launch order",d:"Shelf-filling order that won't repeat",delta:-1},
+    {n:"Founder salary",d:"A market-rate CEO costs $0.5M more",delta:-0.5},
+    {n:"Expired inventory",d:"Never written off",delta:-0.5},
+    {n:"Trade promotions",d:"Cuts revenue by $4M; no EBITDA effect",delta:0},
+    {n:"Adjusted EBITDA",d:"Real, repeatable profit",total:8},
+  ];
+  const QM=12,qoe=$("#qoe");let run=0;
+  const money=v=>(v<0?"−":"")+"$"+Math.abs(v).toFixed(1)+"M";
+  QOE.forEach(r=>{const row=document.createElement("div");row.className="hrow";let bar,label,tipT;
+    if(r.total!==undefined){run=r.total;
+      bar=`<div class="bar" style="width:${r.total/QM*100}%"></div>`;label=`<span class="bval" style="left:${r.total/QM*100}%">${money(r.total)}</span>`;tipT=`${r.n}: ${money(r.total)}`;}
+    else if(r.delta===0){
+      bar=`<div class="tol" style="left:${run/QM*100}%;top:3px;bottom:3px;border-left:2px solid var(--s2)"></div>`;label=`<span class="bval" style="left:${run/QM*100}%">$0</span>`;tipT=`${r.n}: no change to EBITDA (revenue −$4M)`;}
+    else{const from=run+r.delta;
+      bar=`<div class="bar b2" style="left:${from/QM*100}%;width:${-r.delta/QM*100}%;border-radius:3px"></div>`;label=`<span class="bval" style="left:${run/QM*100}%">${money(r.delta)}</span>`;tipT=`${r.n}: ${money(r.delta)}`;run=from;}
+    row.innerHTML=`<div class="hlab"><b>${r.n}</b><span>${r.d}</span></div><div class="track" tabindex="0" data-tip="${tipT}">${bar}${label}</div>`;
+    qoe.appendChild(row);});
+  const qax=document.createElement("div");qax.className="axis";
+  qax.innerHTML=`<div></div><div class="ticks">${[0,2,4,6,8,10,12].map(v=>`<span style="left:${v/QM*100}%">$${v}M</span>`).join("")}</div>`;
+  qoe.appendChild(qax);
+
+  /* ---------- Valuation chart ---------- */
+  const VM=160,val=$("#val");
+  [{n:"Standalone value",d:"$8M × 15 = $120M",seg:[[120,"","Standalone value: $120M"]]},
+   {n:"Plus net synergies",d:"$120M + $25M = $145M",seg:[[120,"","Standalone value: $120M"],[25,"b2","Net synergies: $25M"]]},
+   {n:"Less retailer risk",d:"$145M − $9M = $136M",seg:[[120,"","Standalone value: $120M"],[16,"b2","Net synergies after $9M risk: $16M"]]}]
+  .forEach(r=>{const row=document.createElement("div");row.className="hrow";let x=0,bars="";
+    r.seg.forEach(([v,c,t],i)=>{const left=x/VM*100,w=v/VM*100;
+      bars+=`<div class="bar ${c}" tabindex="0" data-tip="${t}" style="left:calc(${left}% + ${i?2:0}px);width:calc(${w}% - ${i?2:0}px);border-radius:${i===r.seg.length-1?"0 4px 4px 0":"0"}"></div>`;x+=v;});
+    row.innerHTML=`<div class="hlab"><b>${r.n}</b><span>${r.d}</span></div><div class="track">${bars}<div class="tol" style="left:${150/VM*100}%"></div></div>`;
+    val.appendChild(row);});
+  const vax=document.createElement("div");vax.className="axis";
+  vax.innerHTML=`<div></div><div class="ticks">${[0,40,80,120,160].map(v=>`<span style="left:${v/VM*100}%">$${v}M</span>`).join("")}</div>`;
+  val.appendChild(vax);
+  const vtl=document.createElement("p");vtl.className="tolnote";vtl.textContent="Vertical line = $150M asking price";val.appendChild(vtl);
+
+  /* ---------- Heat map you score ---------- */
+  const RISKS=[
+    {id:"R1",n:"Top retailer leaves or cuts back (40% of sales)",l:3,i:5,w:"Its share keeps rising, and losing it would wipe out about $45M of value."},
+    {id:"R2",n:"Sprout has never been audited",l:4,i:4,w:"BrightLeaf may need audited Sprout financials for the SEC soon after closing, and an audit takes months."},
+    {id:"R3",n:"Revenue policy change shrinks reported sales",l:5,i:2,w:"Certain to happen, but it moves revenue, not profit. Explain it to investors early."},
+    {id:"R4",n:"Overpaying, then writing down goodwill",l:3,i:5,w:"At $150M, BrightLeaf pays more than every version of our value. The gap could be written off later."},
+    {id:"R5",n:"Sprout's controls aren't ready for BrightLeaf's SOX program",l:4,i:3,w:"Small finance team. There's some time after closing, but the work should start now."},
+    {id:"R6",n:"More expired or slow-moving inventory",l:3,i:2,w:"Found once already, but small next to the price."},
+  ];
+  const band=s=>s>=20?5:s>=15?4:s>=9?3:s>=5?2:1;
+  const C=54,ox=84,oy=8,G=C*5,HW=ox+G+8,HH=oy+G+52;
+  const hs=svgEl("svg",{viewBox:`0 0 ${HW} ${HH}`,role:"img","aria-label":"Risk heat map"});
+  for(let L=1;L<=5;L++)for(let I=1;I<=5;I++){
+    hs.appendChild(svgEl("rect",{x:ox+(L-1)*C+1,y:oy+(5-I)*C+1,width:C-2,height:C-2,rx:3,fill:`var(--h${band(L*I)})`}));}
+  const lx=["Rare","","Possible","","Likely"],ly=["Minor","","Moderate","","Severe"];
+  for(let k=1;k<=5;k++){
+    const t=svgEl("text",{x:ox+(k-.5)*C,y:oy+G+15,"text-anchor":"middle","font-size":"11",fill:"var(--fg-2)"});t.textContent=k;hs.appendChild(t);
+    if(lx[k-1]){const t2=svgEl("text",{x:ox+(k-.5)*C,y:oy+G+28,"text-anchor":"middle","font-size":"9.5",fill:"var(--muted)"});t2.textContent=lx[k-1];hs.appendChild(t2);}
+    const u=svgEl("text",{x:ox-8,y:oy+(5-k+.5)*C+4,"text-anchor":"end","font-size":"11",fill:"var(--fg-2)"});u.textContent=k;hs.appendChild(u);
+    if(ly[k-1]){const u2=svgEl("text",{x:ox-20,y:oy+(5-k+.5)*C+4,"text-anchor":"end","font-size":"9.5",fill:"var(--muted)"});u2.textContent=ly[k-1];hs.appendChild(u2);}
+  }
+  const xt=svgEl("text",{x:ox+G/2,y:oy+G+46,"text-anchor":"middle","font-size":"11","font-weight":"600",fill:"var(--fg)"});xt.textContent="Likelihood →";hs.appendChild(xt);
+  const yt=svgEl("text",{x:9,y:oy+G/2,"text-anchor":"middle","font-size":"11","font-weight":"600",fill:"var(--fg)",transform:`rotate(-90 9 ${oy+G/2})`});yt.textContent="Impact →";hs.appendChild(yt);
+  const dots=svgEl("g");hs.appendChild(dots);
+  $("#heatmap").appendChild(hs);
+
+  const opt=(lab)=>`<option value="">${lab}</option>`+[1,2,3,4,5].map(v=>`<option value="${v}">${v}</option>`).join("");
+  $("#scorer").innerHTML=RISKS.map(r=>`<li><span class="id">${r.id}</span><span class="nm">${r.n}</span><span class="pick"><select id="l-${r.id}" aria-label="${r.id} likelihood, 1 to 5">${opt("L")}</select><select id="i-${r.id}" aria-label="${r.id} impact, 1 to 5">${opt("I")}</select><span class="sc" id="s-${r.id}">–</span></span></li>`).join("");
+  $("#teamlist").innerHTML=[...RISKS].sort((a,b)=>b.l*b.i-a.l*a.i||b.i-a.i).map(r=>`<li data-say="${r.id}. ${r.n}. Likelihood ${r.l}, impact ${r.i}, score ${r.l*r.i}. ${r.w}"><span class="id">${r.id}</span><span class="nm"><b>${r.n}</b><span class="w">${r.w}</span></span><span class="sc">${r.l}×${r.i} = ${r.l*r.i}</span></li>`).join("");
+
+  let mode="mine";
+  function mine(){return RISKS.map(r=>({id:r.id,n:r.n,l:+$("#l-"+r.id).value,i:+$("#i-"+r.id).value})).filter(r=>r.l&&r.i);}
+  function offsets(n){if(n<=1)return[[0,0]];if(n===2)return[[-12,0],[12,0]];if(n<=4)return[[-12,-11],[12,-11],[-12,11],[12,11]];return[[-15,-11],[0,-11],[15,-11],[-15,11],[0,11],[15,11]];}
+  function plot(list){
+    while(dots.firstChild)dots.removeChild(dots.firstChild);
+    const cells={};list.forEach(r=>{const k=r.l+"-"+r.i;(cells[k]=cells[k]||[]).push(r);});
+    Object.values(cells).forEach(arr=>{const off=offsets(arr.length),big=arr.length===1,rad=big?14:arr.length<=4?10:8;
+      arr.forEach((r,j)=>{const cx=ox+(r.l-.5)*C+off[j][0],cy=oy+(5-r.i+.5)*C+off[j][1];
+        const g=svgEl("g",{tabindex:"0","data-tip":`${r.id} · ${r.n}: likelihood ${r.l}, impact ${r.i}, score ${r.l*r.i}`});
+        g.appendChild(svgEl("circle",{cx,cy,r:rad+2,fill:"var(--surface)"}));
+        g.appendChild(svgEl("circle",{cx,cy,r:rad,fill:"var(--dot)"}));
+        const t=svgEl("text",{x:cx,y:cy+(big?4:3),"text-anchor":"middle","font-size":big?"11":"8.5","font-weight":"600",fill:"var(--dot-ink)"});t.textContent=r.id;g.appendChild(t);
+        dots.appendChild(g);});});
+    hs.setAttribute("aria-label","Risk heat map, "+(mode==="team"?"team's scores":"your scores")+". "+(list.length?list.map(r=>`${r.id}: likelihood ${r.l}, impact ${r.i}`).join(". "):"No risks scored yet."));
+  }
+  function render(){
+    const m=mine();
+    RISKS.forEach(r=>{const l=+$("#l-"+r.id).value,i=+$("#i-"+r.id).value;$("#s-"+r.id).textContent=l&&i?"= "+l*i:"–";});
+    const top=$("#mytop");
+    if(m.length===0)top.textContent="Score all six to see your top three.";
+    else if(m.length<RISKS.length)top.textContent=`Scored ${m.length} of ${RISKS.length}. Score all six to see your top three.`;
+    else{const t=[...m].sort((a,b)=>b.l*b.i-a.l*a.i||b.i-a.i).slice(0,3);top.textContent="Your top three by score: "+t.map(r=>`${r.id} (${r.l*r.i})`).join(", ")+".";}
+    const note=$("#mapnote");
+    if(mode==="team"){plot(RISKS);note.textContent="Showing the team's scores. Switch back to compare with yours.";}
+    else{plot(m);note.textContent=m.length?"Showing your scores. Shared cells show dots side by side.":"Your dots appear here as you score each risk.";}
+  }
+  function setMode(v){mode=v;$("#mMine").setAttribute("aria-pressed",String(v==="mine"));$("#mTeam").setAttribute("aria-pressed",String(v==="team"));render();}
+  $("#scorer").addEventListener("change",()=>{if(mode!=="mine")setMode("mine");else render();});
+  $("#mMine").addEventListener("click",()=>setMode("mine"));
+  $("#mTeam").addEventListener("click",()=>{if(!$("#mTeam").disabled)setMode("team");});
+  $("#rv-prio").addEventListener("click",()=>{$("#mTeam").disabled=false;setMode($("#a-prio").hidden?"mine":"team");});
+  render();
+
+  /* ---------- Practice test ---------- */
+  const TEST=[
+    {q:"EBITDA is roughly…",o:["Total sales before any costs","Profit from operations, before interest, taxes, depreciation, and amortization","Cash in the bank at year-end","Net income after taxes"],a:1,w:"It's a rough measure of operating profit, which is why deals are often priced as a multiple of it."},
+    {q:"A company with $10M of EBITDA sells for $150M. What's the multiple?",o:["10 times","15 times","1.5 times","150 times"],a:1,w:"150 divided by 10 is 15 times."},
+    {q:"A quality of earnings review…",o:["Audits the company's tax returns","Adjusts reported earnings to find the real, repeatable profit","Rates the quality of the products","Sets the company's stock price"],a:1,w:"It removes one-time items and fixes accounting issues, so the buyer prices the deal on profit that will actually repeat."},
+    {q:"Which of these is a cost synergy?",o:["Selling Sprout in BrightLeaf's stores","Raising Sprout's prices","Making Sprout's snacks in BrightLeaf's factories","Launching new flavors"],a:2,w:"Cost synergies are savings from combining operations. Extra sales from new stores are revenue synergies, which are less certain."},
+    {q:"Goodwill is…",o:["The price paid above the fair value of the identifiable assets and liabilities","Cash set aside for charity","The brand's customer reviews","A discount the seller offers"],a:0,w:"In purchase accounting, you value everything you can identify. Whatever is left of the price is goodwill, and it's tested for write-downs at least once a year."},
+    {q:"Moving $4M of retailer payments from marketing expense to a revenue reduction changes EBITDA by…",o:["−$4M","+$4M","$0","−$8M"],a:2,w:"Revenue falls by $4M and expenses fall by $4M, so EBITDA stays the same. It changes how the numbers look, not what the business keeps."},
+    {q:"An earnout is…",o:["A bonus for the deal team","Part of the price paid later, only if the business hits agreed targets","A loan from the seller","A fee paid to the stock exchange"],a:1,w:"It bridges a gap in value: the seller gets more only if the business delivers what they promised."},
+    {q:"Losing a customer would cut $45M of value, and there's a 20% chance it happens. What's the expected loss?",o:["$4.5M","$9M","$20M","$45M"],a:1,w:"$45M × 20% = $9M. Impact times chance."},
+    {q:"In the BrightLeaf case, what is Sprout worth on its own?",o:["$150M","$120M","$80M","$145M"],a:1,w:"$8M of adjusted EBITDA at 15 times is $120M. $145M includes synergies, and $150M is just the ask."},
+    {q:"Why might BrightLeaf need audited Sprout financials soon after closing?",o:["Sprout's founders asked for them","SEC rules can require a public buyer to file audited financials of a significant acquisition","Banks require them for every purchase","Retailers ask for them"],a:1,w:"If the deal is big enough compared with BrightLeaf, the SEC requires audited Sprout financials. Sprout has never had an audit, so it should start now."},
+    {q:"Why shouldn't BrightLeaf pay the seller the full value of the synergies?",o:["Sharing synergies is illegal","BrightLeaf creates them and takes the risk of delivering them","Synergies are always zero","The SEC caps synergy payments"],a:1,w:"If you pay the seller for all the savings you create, your own shareholders get nothing for the work and risk of integration."},
+    {q:"Which is the strongest opening line for your final recommendation?",o:["Let me walk you through everything I looked at.","There are a lot of risks in this deal.","It depends on how much BrightLeaf wants growth.","BrightLeaf should buy Sprout, but offer about $125M upfront plus an earnout of up to $20M."],a:3,w:"Lead with the answer, then support it. Consultants call this answer-first, or the pyramid principle."},
+  ];
+  const testq=$("#testq");
+  TEST.forEach((t,n)=>{const d=document.createElement("div");d.className="mc";d.dataset.answer=t.a;d.dataset.group="test";
+    d.innerHTML=`<div class="mc-head"><p class="stem" data-say="Question ${n+1}. ${t.q.replace(/"/g,"&quot;")}"><span class="qn">Q${n+1}</span>${t.q}</p><button class="btn small qlisten" type="button" aria-label="Listen to question ${n+1}">Listen</button></div>
+      <div class="opts">${t.o.map(o=>`<button class="opt" type="button" data-say="${o.replace(/"/g,"&quot;")}">${o}</button>`).join("")}</div>
+      <div class="why" hidden><p data-say="${t.w.replace(/"/g,"&quot;")}">${t.w}</p></div>`;
+    testq.appendChild(d);});
+
+  /* ---------- multiple choice engine ---------- */
+  function setupMC(mc){const opts=$$(".opt",mc);
+    opts.forEach((o,i)=>{if(!o.querySelector(".L")){const x=document.createElement("span");x.className="x";while(o.firstChild)x.appendChild(o.firstChild);
+        const L=document.createElement("span");L.className="L";L.textContent=LET[i];o.append(L,x);
+        o.dataset.say=LET[i]+". "+(o.dataset.say||x.textContent);}
+      o.addEventListener("click",()=>answer(mc,i));});}
+  function answer(mc,i){if(mc.dataset.done)return;mc.dataset.done="1";const a=+mc.dataset.answer,opts=$$(".opt",mc);
+    opts.forEach((o,k)=>{o.disabled=true;if(k===a){o.classList.add("right");o.insertAdjacentHTML("beforeend",`<span class="tag">✓ ${k===i?"Correct":"Answer"}</span>`);}
+      else if(k===i){o.classList.add("wrong");o.insertAdjacentHTML("beforeend",`<span class="tag">✕ Your pick</span>`);}});
+    mc.dataset.correct=String(i===a);$(".why",mc).hidden=false;if(mc.dataset.group==="test")score();}
+  function resetMC(mc){delete mc.dataset.done;delete mc.dataset.correct;$$(".opt",mc).forEach(o=>{o.disabled=false;o.classList.remove("right","wrong");const t=$(".tag",o);if(t)t.remove();});$(".why",mc).hidden=true;}
+  $$(".mc").forEach(setupMC);
+  function score(){const qs=$$('.mc[data-group="test"]'),done=qs.filter(q=>q.dataset.done),right=done.filter(q=>q.dataset.correct==="true").length;
+    $("#score").innerHTML=`${right} / ${done.length}<small>answered ${done.length} of ${qs.length}</small>`;
+    const box=$("#done");if(done.length===qs.length){box.hidden=false;
+      box.innerHTML=`<b>${right} of ${qs.length}.</b> `+(right>=11?"You're ready. Run the recommendation in step 09 out loud once more and get some sleep.":right>=8?"Solid. Re-read the explanations you missed, then run steps 04 and 09 out loud.":"Go back to the primer in step 01, then retake the test. The terms will stick on the second pass.");}
+    else box.hidden=true;}
+  $("#resetTest").addEventListener("click",()=>{$$('.mc[data-group="test"]').forEach(resetMC);score();$("#test").scrollIntoView();});
+  score();
+
+  /* ---------- read aloud ---------- */
+  const synth=window.speechSynthesis;
+  const rateSel=$("#rate");
+  try{const r=localStorage.getItem("brightleaf-rate");if(r)rateSel.value=r;}catch(e){}
+  rateSel.addEventListener("change",()=>{try{localStorage.setItem("brightleaf-rate",rateSel.value);}catch(e){}});
+  let speakingBtn=null,voice=null;
+  function pickVoice(){if(!synth)return null;const vs=synth.getVoices().filter(v=>/^en[-_]US/i.test(v.lang));
+    return vs.find(v=>/natural|neural/i.test(v.name))||vs.find(v=>/samantha|google us english|aria|jenny/i.test(v.name))||vs[0]||null;}
+  if(synth&&synth.onvoiceschanged!==undefined)synth.onvoiceschanged=()=>{voice=pickVoice();};
+  function textOf(el){return(el.getAttribute("data-say")||el.innerText||"").replace(/\s+/g," ").trim();}
+  function visible(el){return!!(el.offsetWidth||el.offsetHeight||el.getClientRects().length);}
+  function stop(){if(synth)synth.cancel();if(speakingBtn){speakingBtn.textContent=speakingBtn.dataset.label;speakingBtn.setAttribute("aria-pressed","false");speakingBtn=null;}}
+  function speak(btn,els){
+    if(!synth)return;
+    if(speakingBtn===btn){stop();return;}
+    stop();voice=voice||pickVoice();
+    const chunks=[];els.filter(visible).forEach(el=>{textOf(el).split(/(?<=[.?!])\s+(?=[A-Z0-9"“])/).forEach(c=>{if(c)chunks.push(c);});});
+    if(!chunks.length)return;
+    speakingBtn=btn;btn.dataset.label=btn.dataset.label||btn.textContent;btn.textContent="Stop";btn.setAttribute("aria-pressed","true");
+    chunks.forEach((c,i)=>{const u=new SpeechSynthesisUtterance(c);u.rate=+rateSel.value;if(voice)u.voice=voice;u.lang="en-US";
+      if(i===chunks.length-1)u.onend=()=>{if(speakingBtn===btn)stop();};synth.speak(u);});
+  }
+  if(!synth){$$(".listen,.qlisten").forEach(b=>b.hidden=true);$(".speed").hidden=true;}
+  else{
+    $$(".listen").forEach(b=>{b.dataset.label=b.textContent;b.addEventListener("click",()=>{const sec=b.closest("section");speak(b,$$("[data-say]",sec).filter(el=>!el.parentElement.closest("[data-say]")));});});
+    document.addEventListener("click",e=>{const b=e.target.closest(".qlisten");if(!b)return;const mc=b.closest(".mc");speak(b,$$("[data-say]",mc).filter(el=>!el.parentElement.closest("[data-say]")));});
+  }
+
+  /* ---------- rail highlight ---------- */
+  const chips=$$("#chips a"),map=new Map(chips.map(a=>[a.getAttribute("href").slice(1),a]));
+  if("IntersectionObserver" in window){
+    const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){chips.forEach(c=>c.classList.remove("on"));const a=map.get(en.target.id);if(a){a.classList.add("on");const p=a.parentElement;p.scrollTo({left:a.offsetLeft-p.clientWidth/2+a.offsetWidth/2,behavior:"smooth"});}}});},{rootMargin:"-45% 0px -50% 0px"});
+    $$("section.step").forEach(s=>io.observe(s));
+  }
+})();
+</script>
+</body></html>
