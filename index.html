@@ -411,12 +411,12 @@ footer{padding-block:40px 64px;border-top:1px solid var(--line);font-size:14px;c
   <div class="iv">
     <p class="who">Interviewer</p>
     <p data-say>Our client is BrightLeaf Foods, a public packaged-snack company with about 500 million dollars in revenue. Its core business is growing only about 2 percent a year.</p>
-    <p data-say>BrightLeaf wants to buy Sprout Kitchen, a younger plant-based snack brand. Sprout reports about 50 million dollars in revenue, growing 35 percent a year, and 10 million dollars of EBITDA, which is roughly its operating profit. Sprout's founders are asking 150 million dollars.</p>
+    <p data-say>BrightLeaf wants to buy Sprout Kitchen, a younger plant-based snack brand. Over the last 12 months, Sprout reports about 50 million dollars in revenue, growing 35 percent a year, and 10 million dollars of EBITDA, which is roughly its operating profit. Sprout's founders are asking 150 million dollars.</p>
     <p data-say>BrightLeaf's CFO has asked PwC: is 150 million a fair price once we've checked Sprout's numbers, and what accounting and reporting risks do we need to handle before closing?</p>
   </div>
   <div class="facts">
     <div><div class="k">BrightLeaf revenue</div><div class="v">$500M</div><div class="d">Growing about 2% a year</div></div>
-    <div><div class="k">Sprout revenue</div><div class="v">$50M</div><div class="d">Growing 35% a year, as reported</div></div>
+    <div><div class="k">Sprout revenue</div><div class="v">$50M</div><div class="d">Last 12 months · growing 35% a year, as reported</div></div>
     <div><div class="k">Sprout EBITDA</div><div class="v">$10M</div><div class="d">As reported, not audited</div></div>
     <div><div class="k">Asking price</div><div class="v">$150M</div><div class="d">15× reported EBITDA</div></div>
   </div>
@@ -518,6 +518,23 @@ footer{padding-block:40px 64px;border-top:1px solid var(--line);font-size:14px;c
     <div class="why" hidden>
       <p data-say>Revenue jumped to 14 million in Q1 2026, then fell back to 12. That's a launch order to fill a big retailer's shelves, and it won't repeat. The top retailer's share of sales went from 25 percent to about 40 percent. Gross margin slid from 42 percent to 36 percent while trade promotion spend doubled. Repeat purchases are healthy at about 40 percent, so customers like the product. The real question is how much of the growth and profit will last.</p>
     </div>
+  </div>
+
+  <div class="move">
+    <span class="lbl">Check</span>
+    <p data-say>Test the claim. Do the quarters add up to the reported 50 million, and is revenue really growing 35 percent a year?</p>
+    <div class="acts"><button class="btn small timer" type="button" data-secs="90">90s timer</button><button class="btn primary small reveal" type="button" aria-controls="a-ex1g" aria-expanded="false">Show the check</button></div>
+  </div>
+  <div class="ans" id="a-ex1g" hidden>
+    <p class="who">The check</p>
+    <ul data-say>
+      <li><b>The last 12 months are the latest four quarters.</b> Q4 2025 to Q3 2026: 11 + 14 + 12 + 13 = 50 million. That matches the reported 50 million.</li>
+      <li><b>Older windows are smaller, as they should be.</b> Q2 2025 to Q1 2026 adds to 44 million, and Q3 2025 to Q2 2026 adds to 47 million. Each newer window is bigger: that's what growth looks like.</li>
+      <li><b>To test the growth rate, compare the same quarter a year apart.</b> Q2: 9 to 12 million, up 33 percent. Q3: 10 to 13 million, up 30 percent. That's a bit below the 35 percent Sprout claims.</li>
+      <li><b>And the 50 million includes the one-time launch order</b> in Q1 2026, so the repeatable base is a little lower.</li>
+    </ul>
+    <div class="script"><p data-say>"The quarters do add to about 50 million for the last 12 months, but that includes a one-time launch order, and same-quarter growth is closer to 30 percent than 35. A 15 times price assumes fast growth continues, so that gap matters."</p></div>
+    <p class="note" data-say>Comparing the same quarter a year apart avoids seasonal swings, like a holiday quarter that's always bigger.</p>
   </div>
 
   <div class="move">

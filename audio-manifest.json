@@ -1,29 +1,5 @@
 [
  {
-  "hash": "36bb79ac2726c3a3e4236dc89b5beb97334ecff5",
-  "text": "MOCK CASE 2 \u00b7 PWC CMAAS \u00b7 ABOUT 40 MINUTES"
- },
- {
-  "hash": "40661c2228567811d49b6363f62d170add1f074b",
-  "text": "BrightLeaf Foods"
- },
- {
-  "hash": "d3fc4599a74673876e17968e846dd45968ed8c71",
-  "text": "A packaged-snack company wants to buy a fast-growing plant-based brand for 150 million dollars. You're the PwC CMAAS consultant checking whether the price holds up once the numbers are cleaned up, and which accounting risks to handle before closing."
- },
- {
-  "hash": "f41ed33d9a9a74c19fbaf7123bccaaa1dc56e089",
-  "text": "Listen or read the interviewer's prompt. Every step has a Listen button."
- },
- {
-  "hash": "10f71a63ac4d2359f854232c52fc00aaea68f6dc",
-  "text": "Answer out loud before you reveal anything. Use the timers."
- },
- {
-  "hash": "6d89ff18c201911a365dd41eff430a30623c7418",
-  "text": "Compare with the strong answer, then move to the next step."
- },
- {
   "hash": "b53ddcd398d9d0bc5a71ee327bd87e5bcd9938dd",
   "text": "What CMAAS does in an acquisition"
  },
@@ -172,16 +148,12 @@
   "text": "The case prompt"
  },
  {
-  "hash": "2bea13779f71b068910e9a84f9544399623b1804",
-  "text": "INTERVIEWER"
- },
- {
   "hash": "a828d02deaa8ba39982d4612fd9c9bb0f4b797b6",
   "text": "Our client is BrightLeaf Foods, a public packaged-snack company with about 500 million dollars in revenue. Its core business is growing only about 2 percent a year."
  },
  {
-  "hash": "d669903065d92b2c22b046e4d8dd88b5ed710af3",
-  "text": "BrightLeaf wants to buy Sprout Kitchen, a younger plant-based snack brand. Sprout reports about 50 million dollars in revenue, growing 35 percent a year, and 10 million dollars of EBITDA, which is roughly its operating profit. Sprout's founders are asking 150 million dollars."
+  "hash": "5ef4064ba2ce76e9694ea9514ce5fc2a7ac1e7bf",
+  "text": "BrightLeaf wants to buy Sprout Kitchen, a younger plant-based snack brand. Over the last 12 months, Sprout reports about 50 million dollars in revenue, growing 35 percent a year, and 10 million dollars of EBITDA, which is roughly its operating profit. Sprout's founders are asking 150 million dollars."
  },
  {
   "hash": "3ea3c68b68748d48ca49fc82441b2527eb978653",
@@ -190,10 +162,6 @@
  {
   "hash": "fd6b9a72cdeb88f2284e9a39081ac2b134e6bf03",
   "text": "Restate the question in one sentence before you do anything else."
- },
- {
-  "hash": "d525548f59ac31a46e24c3ebba751cc603d607d7",
-  "text": "STRONG ANSWER"
  },
  {
   "hash": "546fdc2b9dfde3387cb37ea264bf7d030b65c951",
@@ -210,10 +178,6 @@
  {
   "hash": "cf40a0f2f5aaee7152d7c02c95d4ee459e4dc68e",
   "text": "Ask two or three clarifying questions. Pick ones whose answers would change your approach."
- },
- {
-  "hash": "07bb13454b4ad758e463dec0fb29157e3a669fd3",
-  "text": "STRONG QUESTIONS, WITH THE INTERVIEWER'S ANSWERS"
  },
  {
   "hash": "428296f04d84e43591efe0be72783cb987e881b5",
@@ -254,10 +218,6 @@
  {
   "hash": "8d3a87d9bc4a2ac02e3d6d13064b463eee25932d",
   "text": "Take 60 seconds to sketch three or four buckets, then walk the interviewer through them out loud."
- },
- {
-  "hash": "7945cefa89a1794e79a31316c3ed524225b41a5a",
-  "text": "STRONG FRAMEWORK"
  },
  {
   "hash": "16ac89176f5f5d99eeddc300db03a91fce7b25d6",
@@ -360,12 +320,36 @@
   "text": "Revenue jumped to 14 million in Q1 2026, then fell back to 12. That's a launch order to fill a big retailer's shelves, and it won't repeat. The top retailer's share of sales went from 25 percent to about 40 percent. Gross margin slid from 42 percent to 36 percent while trade promotion spend doubled. Repeat purchases are healthy at about 40 percent, so customers like the product. The real question is how much of the growth and profit will last."
  },
  {
-  "hash": "74b4ff09b7a4743784573c048b004ec90e3c4cc7",
-  "text": "Say the insight out loud, tie it to the price, and ask for the next piece of data."
+  "hash": "ab6c97ef37ade502b13acffd7461bdfef6146c96",
+  "text": "Test the claim. Do the quarters add up to the reported 50 million, and is revenue really growing 35 percent a year?"
  },
  {
-  "hash": "9081300dd752cc7160c72ad471729f81d2ade2ff",
-  "text": "SAY IT LIKE THIS"
+  "hash": "0864a156f867822f2b8b02ccb5a9a06efdc831d5",
+  "text": "The last 12 months are the latest four quarters. Q4 2025 to Q3 2026: 11 + 14 + 12 + 13 = 50 million. That matches the reported 50 million."
+ },
+ {
+  "hash": "b98111092ad0dc373c8e8115193867c83c4e0a77",
+  "text": "Older windows are smaller, as they should be. Q2 2025 to Q1 2026 adds to 44 million, and Q3 2025 to Q2 2026 adds to 47 million. Each newer window is bigger: that's what growth looks like."
+ },
+ {
+  "hash": "36d07826158570feaefacd64a42a32250e643e9a",
+  "text": "To test the growth rate, compare the same quarter a year apart. Q2: 9 to 12 million, up 33 percent. Q3: 10 to 13 million, up 30 percent. That's a bit below the 35 percent Sprout claims."
+ },
+ {
+  "hash": "3adc93bcb9dce839a6db905c7828cf9f527df8e1",
+  "text": "And the 50 million includes the one-time launch order in Q1 2026, so the repeatable base is a little lower."
+ },
+ {
+  "hash": "fc34eb9e96625f452dc5e09329410212d297ff7b",
+  "text": "\"The quarters do add to about 50 million for the last 12 months, but that includes a one-time launch order, and same-quarter growth is closer to 30 percent than 35. A 15 times price assumes fast growth continues, so that gap matters.\""
+ },
+ {
+  "hash": "0d73a2f6020300dcc5a0f6fe7b460aa019ce95af",
+  "text": "Comparing the same quarter a year apart avoids seasonal swings, like a holiday quarter that's always bigger."
+ },
+ {
+  "hash": "74b4ff09b7a4743784573c048b004ec90e3c4cc7",
+  "text": "Say the insight out loud, tie it to the price, and ask for the next piece of data."
  },
  {
   "hash": "5fd2bd27dd43d28bc045e487146b3bf1005633dd",
@@ -508,8 +492,8 @@
   "text": "Score each risk out loud with a one-line reason, then name your top three."
  },
  {
-  "hash": "78ad2f061ee756222f933c1d8809b5fe279edeee",
-  "text": "THE TEAM'S SCORES, WITH REASONS"
+  "hash": "891f8b94c7459a349db8c3dbeedf17e43b709565",
+  "text": "Say it like this"
  },
  {
   "hash": "d56060642d4458121b715c139b49a0c26278a9fd",
